@@ -1,0 +1,46 @@
+version: '2'
+services:
+  # history:
+  #   build: ./docker/history
+  #   links:
+  #     - mongo
+  # live:
+  #   build: ./docker/live
+  #   environment:
+  #     steemnode: "steemd.steemit.com"
+  #   # links:
+  #   #   - mongo
+  #   ports:
+  #     - "8888:8888"
+  # sync:
+  #   build: ./docker/sync
+  #   links:
+  #     - mongo
+  witnesses:
+    build: ./docker/witnesses
+    links:
+      - mongo
+    environment:
+      steemnode: "ws://45.79.199.24:8090"
+    volumes:
+      - ./docker/witnesses:/src
+  # development:
+  #   build: ./docker/development
+  #   links:
+  #     - mongo
+  #   volumes:
+  #     - .:/var/www/html
+  #   ports:
+  #     - "80:80"
+  mongodata:
+    image: mongo:3.3.10
+    volumes:
+      - /data/db
+    command: --break-mongo
+  mongo:
+    image: mongo:3.3.10
+    volumes_from:
+      - mongodata
+    # ports:
+    #   - "27020:27017"
+    command: --smallfiles --rest
